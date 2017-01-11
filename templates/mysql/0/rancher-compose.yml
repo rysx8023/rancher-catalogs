@@ -1,0 +1,42 @@
+.catalog:
+  name: Mysql Server for Rancher
+  version: 5.5
+  description: Mysql Server
+  questions:
+    - variable: mysql_public_port
+      label: Mysql Public Port
+      type: int
+      required: true
+      default: 3306
+      description: "Mysql Public Port"
+    - variable: mysql_database
+      type: "string"
+      required: true
+      label: "Mysql Database Name"
+      description: "Mysql Database Name"
+    - variable: server_character
+      type: "string"
+      label: "Mysql Server Character"
+      default: "utf8mb4"
+      description: "Mysql Server Character"
+      required: true
+    - variable: server_collation
+      type: "string"
+      label: "Mysql Server Collation"
+      required: true
+      default: "utf8mb4_unicode_ci"
+      description: "Mysql Server Collation"
+    - variable: mysql_user
+      type: "string"
+      label: "Mysql User"
+      required: true
+    - variable: mysql_password
+      type: "string"
+      label: "Mysql Password"
+      required: true
+      description: "Mysql Password"
+    - variable: mysql_allow_empty_password
+      type: "boolean"
+      label: "Allow Empty Password"
+      default: true
+      description: "Allow Empty Password"
