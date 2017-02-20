@@ -10,6 +10,8 @@ wise2build-biz:
   image: registry.aliyuncs.com/wise2c/build-biz:2.1.100
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
+  environment:
+    PROFILE: rancher
   labels:
     io.rancher.container.pull_image: always
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
