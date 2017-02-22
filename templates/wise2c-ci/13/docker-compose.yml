@@ -1,5 +1,5 @@
 wise2build-frontend:
-  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.86
+  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.115
   stdin_open: true
   tty: true
   labels:
