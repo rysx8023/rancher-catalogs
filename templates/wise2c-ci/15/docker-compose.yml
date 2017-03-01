@@ -20,7 +20,7 @@ consul-server:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
 identity-service:
-  image: registry.aliyuncs.com/wisecloud/identity:2.1.44
+  image: registry.aliyuncs.com/wisecloud/identity:2.1.49
   environment:
     PROFILE: rancher
   external_links:
@@ -41,7 +41,7 @@ identity-database:
   - --collation-server=utf8mb4_unicode_ci
 
 wise2build-frontend:
-  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.27-workflow
+  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.28-workflow
   stdin_open: true
   tty: true
   labels:
@@ -49,7 +49,7 @@ wise2build-frontend:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
 wise2build-biz:
-  image: registry.aliyuncs.com/wise2c/build-biz:2.1.134
+  image: registry.aliyuncs.com/wise2c/build-biz:2.1.136
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
   environment:
@@ -78,7 +78,7 @@ mysql-server:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
 wise2build-worker:
-  image: registry.aliyuncs.com/wise2c/build-worker:2.1.65
+  image: registry.aliyuncs.com/wise2c/build-worker:2.1.66
   stdin_open: true
   tty: true
   links:
