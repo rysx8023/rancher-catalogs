@@ -41,7 +41,7 @@ identity-database:
   - --collation-server=utf8mb4_unicode_ci
 
 wise2build-frontend:
-  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.28-workflow
+  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.31-workflow
   stdin_open: true
   tty: true
   labels:
