@@ -20,7 +20,7 @@ consul-server:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
 identity-service:
-  image: registry.aliyuncs.com/wisecloud/identity:2.1.49
+  image: registry.aliyuncs.com/wisecloud/identity:2.1.57
   environment:
     PROFILE: rancher
   external_links:
