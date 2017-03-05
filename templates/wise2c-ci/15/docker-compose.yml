@@ -152,6 +152,6 @@ artifactory:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
   tty: true
   image: yunlzheng/artifactory-oss
-  volumes:
-    - /var/opt/jfrog/artifactory:/var/opt/jfrog/artifactory
   stdin_open: true
+  # volumes:
+  #   - /var/opt/jfrog/artifactory:/var/opt/jfrog/artifactory
