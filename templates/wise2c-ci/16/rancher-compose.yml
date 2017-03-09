@@ -32,10 +32,3 @@
       type: "string"
       description: |
         Please add host label wise2worker
-    - variable: schedule_host_label
-      label: "Schedule Host Label Value"
-      required: true
-      default: "schedule"
-      type: "string"
-      description: |
-        Please add host label wise2Schedule
