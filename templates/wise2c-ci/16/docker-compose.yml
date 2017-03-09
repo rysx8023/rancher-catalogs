@@ -2,7 +2,6 @@ wise2ci-vip:
   image: rancher/load-balancer-service
   ports:
   - ${http_port}:80
-  tty: true
   links:
   - wise2build-frontend:wise2build-frontend
   - identity-service:identity-service
@@ -33,8 +32,6 @@ identity-database:
   environment:
     MYSQL_DATABASE: identity
     MYSQL_ROOT_PASSWORD: '123456'
-  stdin_open: true
-  tty: true
   command:
   - mysqld
   - --character-set-server=utf8mb4
@@ -42,14 +39,12 @@ identity-database:
 
 wise2build-frontend:
   image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.28-workflow
-  stdin_open: true
-  tty: true
   labels:
     io.rancher.container.pull_image: always
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
 wise2build-biz:
-  image: registry.aliyuncs.com/wise2c/build-biz:2.1.136
+  image: registry.aliyuncs.com/wise2c/build-biz:2.1.160
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
   environment:
@@ -61,8 +56,6 @@ wise2build-biz:
     - consul-server:eureka-server
     - mysql-server
     - rabbitmq
-  tty: true
-  stdin_open: true
 
 mysql-server:
   image: mysql:5.5
@@ -71,16 +64,12 @@ mysql-server:
   environment:
     MYSQL_ROOT_PASSWORD: my-secret-pw
     MYSQL_DATABASE: builderdb
-  tty: true
-  stdin_open: true
   command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
   labels:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
 wise2build-worker:
-  image: registry.aliyuncs.com/wise2c/build-worker:2.1.66
-  stdin_open: true
-  tty: true
+  image: registry.aliyuncs.com/wise2c/build-worker:2.1.68
   links:
     - consul-server:eureka-server
     - rabbitmq
@@ -100,40 +89,29 @@ mysql-server2:
     MYSQL_DATABASE: workerdb
   volumes:
   - /var/lib//worker-data-dir:/var/lib/mysql
-  tty: true
-  stdin_open: true
   command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
   labels:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
+
 wise2build-schedule:
-  image: registry.aliyuncs.com/wisecloud-schedule/schedule-service:1.0.11
+  image: registry.aliyuncs.com/wisecloud-schedule/schedule-service:1.0.28
   environment:
     PROFILE: rancher
-  tty: true
   links:
   - schedule-database:mysql-server
-  - consul-server:eureka-server 
-  labels:
-    io.rancher.container.pull_image: always
+  - consul-server:eureka-server
+
 schedule-database:
   image: mysql:5.5
   environment:
     MYSQL_DATABASE: scheduledb
     MYSQL_ROOT_PASSWORD: password
-  stdin_open: true
-  tty: true
-  ports:
-  - 3310:3306/tcp
-  labels:
-    io.rancher.container.pull_image: always
 
 document:
   labels:
     io.rancher.container.pull_image: always
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
-  tty: true
   image: registry.aliyuncs.com/wise2c/document:2.0.0
-  stdin_open: true
 
 rabbitmq:
   image: rabbitmq:3-management
@@ -147,9 +125,7 @@ postgres-server:
   environment:
     POSTGRES_USER: sonar
     POSTGRES_PASSWORD: sonar
-  tty: true
   image: postgres:9
-  stdin_open: true
   labels:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
@@ -158,11 +134,9 @@ sonarqube:
     SONARQUBE_JDBC_USERNAME: sonar
     SONARQUBE_JDBC_PASSWORD: sonar
     SONARQUBE_JDBC_URL: jdbc:postgresql://postgres-server/sonar
-  tty: true
   image: sonarqube:6.1
   links:
   - postgres-server:postgres-server
-  stdin_open: true
   ports:
   - ${sonarqube_http_port}:9000
   labels:
@@ -171,6 +145,4 @@ sonarqube:
 artifactory:
   labels:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
-  tty: true
   image: yunlzheng/artifactory-oss
-  stdin_open: true
