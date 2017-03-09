@@ -38,7 +38,7 @@ identity-database:
   - --collation-server=utf8mb4_unicode_ci
 
 wise2build-frontend:
-  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.28-workflow
+  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.38-workflow
   labels:
     io.rancher.container.pull_image: always
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
