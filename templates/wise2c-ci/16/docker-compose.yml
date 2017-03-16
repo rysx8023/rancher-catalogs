@@ -1,51 +1,38 @@
-wise2ci-vip:
-  image: rancher/load-balancer-service
-  ports:
-  - ${http_port}:80
-  links:
-  - wise2build-frontend:wise2build-frontend
-  - identity-service:identity-service
-  - wise2build-biz:wise2build-biz
-  - document:document
-  labels:
-    io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
-    io.rancher.loadbalancer.target.wise2build-frontend: ${http_port}=80
-    io.rancher.loadbalancer.target.document: ${http_port}/document=80
-    io.rancher.loadbalancer.target.wise2build-biz: ${http_port}/api=80, ${http_port}/sockjs=80, ${http_port}/artifactory=80
-
 consul-server:
   image: consul:0.7.0
   command: agent -server -client=0.0.0.0 -dev -node=node0 -bootstrap-expect=1 -data-dir=/tmp/consul
   labels:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
-# identity-service:
-#   image: registry.aliyuncs.com/wisecloud/identity:2.1.49
-#   environment:
-#     PROFILE: rancher
-#   external_links:
-#   - consul-server:consul-server
-#   links:
-#   - identity-database:mysql-server
-#
-# identity-database:
-#   image: mysql:5.5
-#   environment:
-#     MYSQL_DATABASE: identity
-#     MYSQL_ROOT_PASSWORD: '123456'
-#   command:
-#   - mysqld
-#   - --character-set-server=utf8mb4
-#   - --collation-server=utf8mb4_unicode_ci
+identity-service:
+  image: registry.aliyuncs.com/wisecloud/identity:2.1.59
+  environment:
+    PROFILE: rancher
+  external_links:
+  - consul-server:consul-server
+  links:
+  - identity-database:mysql-server
+
+identity-database:
+  image: mysql:5.5
+  environment:
+    MYSQL_DATABASE: identity
+    MYSQL_ROOT_PASSWORD: '123456'
+  command:
+  - mysqld
+  - --character-set-server=utf8mb4
+  - --collation-server=utf8mb4_unicode_ci
 
 wise2build-frontend:
-  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.38-workflow
+  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.46-workflow
+  ports:
+    - ${http_port}:80
   labels:
     io.rancher.container.pull_image: always
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
 wise2build-biz:
-  image: registry.aliyuncs.com/wise2c/build-biz:2.1.160
+  image: registry.aliyuncs.com/wise2c/build-biz:2.1.181
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
   environment:
@@ -55,10 +42,10 @@ wise2build-biz:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
   links:
     - consul-server:eureka-server
-    - mysql-server
+    - workerflow-database:mysql-server
     - rabbitmq
 
-mysql-server:
+workerflow-database:
   image: mysql:5.5
   volumes:
   - /var/lib//biz-data-dir:/var/lib/mysql
@@ -70,11 +57,11 @@ mysql-server:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
 wise2build-worker:
-  image: registry.aliyuncs.com/wise2c/build-worker:2.1.68
+  image: registry.aliyuncs.com/wise2c/build-worker:2.1.77
   links:
     - consul-server:eureka-server
     - rabbitmq
-    - mysql-server2:mysql-server
+    - worker-database:mysql-server
   labels:
     io.rancher.container.pull_image: always
     io.rancher.scheduler.affinity:host_label: wise2worker=${worker_host_label}
@@ -83,7 +70,7 @@ wise2build-worker:
     - /root/.jenkins/workspace:/root/.jenkins/workspace
     - /tmp:/tmp
 
-mysql-server2:
+worker-database:
   image: mysql:5.5
   environment:
     MYSQL_ROOT_PASSWORD: password
@@ -145,5 +132,8 @@ sonarqube:
 
 artifactory:
   labels:
+    io.rancher.container.pull_image: always
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
   image: yunlzheng/artifactory-oss
+  volumes:
+    - /var/lib/artifactory-data:/var/opt/jfrog/artifactory
