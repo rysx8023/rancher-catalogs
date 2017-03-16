@@ -25,6 +25,10 @@ identity-database:
 
 wise2build-frontend:
   image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.46-workflow
+  environment:
+    CONSUL: consul-server:8500
+  external_links:
+    - consul-server:consul-server
   ports:
     - ${http_port}:80
   labels:
