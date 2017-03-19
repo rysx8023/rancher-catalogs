@@ -24,7 +24,7 @@ identity-database:
   - --collation-server=utf8mb4_unicode_ci
 
 wise2build-frontend:
-  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.46-workflow
+  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.49-workflow
   environment:
     CONSUL: consul-server:8500
   external_links:
