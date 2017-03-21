@@ -36,7 +36,7 @@ wise2build-frontend:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
 wise2build-biz:
-  image: registry.aliyuncs.com/wise2c/build-biz:2.1.181
+  image: registry.aliyuncs.com/wise2c/build-biz:2.1.186
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
   environment:
