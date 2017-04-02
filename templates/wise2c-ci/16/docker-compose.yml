@@ -4,29 +4,8 @@ consul-server:
   labels:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
-identity-service:
-  image: registry.aliyuncs.com/wisecloud/identity:2.1.72
-  environment:
-    PROFILE: rancher
-  ports:
-    - 19191:19191
-  external_links:
-  - consul-server:consul-server
-  links:
-  - identity-database:mysql-server
-
-identity-database:
-  image: mysql:5.5
-  environment:
-    MYSQL_DATABASE: identity
-    MYSQL_ROOT_PASSWORD: '123456'
-  command:
-  - mysqld
-  - --character-set-server=utf8mb4
-  - --collation-server=utf8mb4_unicode_ci
-
 wise2build-frontend:
-  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.56-workflow
+  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.4-release
   environment:
     CONSUL: consul-server:8500
   external_links:
@@ -38,7 +17,7 @@ wise2build-frontend:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
 wise2build-biz:
-  image: registry.aliyuncs.com/wise2c/build-biz:2.1.192
+  image: registry.aliyuncs.com/wise2c/build-biz:2.1.4-release
   ports:
     - 16060:16060
   volumes:
@@ -65,7 +44,7 @@ workerflow-database:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
 wise2build-worker:
-  image: registry.aliyuncs.com/wise2c/build-worker:2.1.82
+  image: registry.aliyuncs.com/wise2c/build-worker:2.1.4-release
   links:
     - consul-server:eureka-server
     - rabbitmq
@@ -89,8 +68,8 @@ worker-database:
   labels:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
-wise2build-schedule:
-  image: registry.aliyuncs.com/wisecloud-schedule/schedule-service:1.0.28
+build-schedule:
+  image: registry.aliyuncs.com/wise2c/build-schedule:2.1.4-release
   environment:
     PROFILE: rancher
   links:
@@ -107,7 +86,7 @@ document:
   labels:
     io.rancher.container.pull_image: always
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
-  image: registry.aliyuncs.com/wise2c/document:2.0.0
+  image: registry.aliyuncs.com/wise2c/document:2.1.4-release
 
 rabbitmq:
   image: rabbitmq:3-management
