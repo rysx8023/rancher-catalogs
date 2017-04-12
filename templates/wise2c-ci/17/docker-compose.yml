@@ -18,8 +18,6 @@ wise2build-frontend:
 
 wise2build-biz:
   image: registry.aliyuncs.com/wise2c/build-biz:2.1.5-preview
-  ports:
-    - 16060:16060
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
   environment:
