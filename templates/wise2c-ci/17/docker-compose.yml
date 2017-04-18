@@ -5,7 +5,7 @@ consul-server:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
 wise2build-frontend:
-  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.5-preview
+  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.5
   environment:
     CONSUL: consul-server:8500
   external_links:
@@ -17,7 +17,7 @@ wise2build-frontend:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
 wise2build-biz:
-  image: registry.aliyuncs.com/wise2c/build-biz:2.1.5-preview
+  image: registry.aliyuncs.com/wise2c/build-biz:2.1.5
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
   environment:
@@ -42,7 +42,7 @@ workerflow-database:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
 wise2build-worker:
-  image: registry.aliyuncs.com/wise2c/build-worker:2.1.5-preview
+  image: registry.aliyuncs.com/wise2c/build-worker:2.1.5
   links:
     - consul-server:eureka-server
     - rabbitmq
@@ -67,7 +67,7 @@ worker-database:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
 build-schedule:
-  image: registry.aliyuncs.com/wise2c/build-schedule:2.1.5-preview
+  image: registry.aliyuncs.com/wise2c/build-schedule:2.1.5
   environment:
     PROFILE: rancher
   links:
@@ -81,10 +81,10 @@ schedule-database:
     MYSQL_ROOT_PASSWORD: password
 
 document:
+  image: registry.aliyuncs.com/wise2c/document:2.1.5
   labels:
     io.rancher.container.pull_image: always
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
-  image: registry.aliyuncs.com/wise2c/document:2.1.4-release
 
 rabbitmq:
   image: rabbitmq:3-management
@@ -119,6 +119,6 @@ artifactory:
   labels:
     io.rancher.container.pull_image: always
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
-  image: wisecity/artifactory-oss:5.1.4
+  image: wisecity/artifactory-oss:5.2.0
   volumes:
     - /var/lib/artifactory-data:/var/opt/jfrog/artifactory

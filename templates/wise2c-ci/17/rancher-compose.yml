@@ -1,6 +1,6 @@
 .catalog:
   name: wise2c-ci
-  version: "2.1.5-preview"
+  version: "2.1.5"
   description: |
     Wise2c Continuous Integration Solution Platform
   questions:
