@@ -103,11 +103,11 @@ postgres-server:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
 sonarqube:
+  image: wisecity/sonarqube:6.1
   environment:
     SONARQUBE_JDBC_USERNAME: sonar
     SONARQUBE_JDBC_PASSWORD: sonar
     SONARQUBE_JDBC_URL: jdbc:postgresql://postgres-server/sonar
-  image: wisecity/sonarqube:6.1
   links:
   - postgres-server:postgres-server
   ports:
@@ -116,9 +116,9 @@ sonarqube:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
 artifactory:
+  image: wisecity/artifactory-oss:5.2.0
   labels:
     io.rancher.container.pull_image: always
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
-  image: wisecity/artifactory-oss:5.2.0
   volumes:
     - /var/lib/artifactory-data:/var/opt/jfrog/artifactory
