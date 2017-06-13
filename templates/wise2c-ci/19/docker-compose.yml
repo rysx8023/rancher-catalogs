@@ -97,8 +97,8 @@ wise2build-worker:
     - consul-server:eureka-server
     - rabbitmq
   labels:
+    io.rancher.scheduler.global: 'true'
     io.rancher.container.pull_image: always
-    io.rancher.scheduler.affinity:host_label: wise2worker=${worker_host_label}
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - /root/.jenkins/workspace:/root/.jenkins/workspace

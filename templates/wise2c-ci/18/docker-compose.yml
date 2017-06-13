@@ -98,7 +98,7 @@ wise2build-worker:
     - rabbitmq
   labels:
     io.rancher.container.pull_image: always
-    io.rancher.scheduler.affinity:host_label: wise2worker=${worker_host_label}
+    io.rancher.scheduler.global: 'true'
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - /root/.jenkins/workspace:/root/.jenkins/workspace
