@@ -93,6 +93,7 @@ wise2build-worker:
   image: registry.aliyuncs.com/wise2c/build-worker:2.1.7
   environment:
     PROFILE: rancher
+    WORKER_HOME: ${workespace}
   links:
     - consul-server:eureka-server
     - rabbitmq

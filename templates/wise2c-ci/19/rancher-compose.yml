@@ -4,6 +4,12 @@
   description: |
     Wise2c Continuous Integration Solution Platform
   questions:
+    - variable: workespace
+      label: workerspace
+      type: "string"
+      required: true
+      default: "/data/worker"
+      description: "worker agent workspace home"
     - variable: http_port
       label: "Http Port"
       type: "int"
