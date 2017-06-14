@@ -27,7 +27,6 @@ mysql-server-datavolume:
     io.rancher.container.start_once: 'true'
     io.rancher.container.pull_image: always
 
-
 document:
   image: registry.aliyuncs.com/wise2c/document:2.1.6
   labels:
