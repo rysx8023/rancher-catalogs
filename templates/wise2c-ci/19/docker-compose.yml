@@ -62,7 +62,7 @@ artifactory:
     - /var/lib/artifactory-data:/var/opt/jfrog/artifactory
 # Middleware End
 wise2build-frontend:
-  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.7
+  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.7.1
   environment:
     CONSUL: consul-server:8500
   external_links:
@@ -74,7 +74,7 @@ wise2build-frontend:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
 wise2build-biz:
-  image: registry.aliyuncs.com/wise2c/build-biz:2.1.7
+  image: registry.aliyuncs.com/wise2c/build-biz:2.1.7.1
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
   environment:
@@ -90,7 +90,7 @@ wise2build-biz:
     - --spring.datasource.password=wise2c2017
 
 wise2build-worker:
-  image: registry.aliyuncs.com/wise2c/build-worker:2.1.7
+  image: registry.aliyuncs.com/wise2c/build-worker:2.1.7.1
   environment:
     PROFILE: rancher
     WORKER_HOME: ${workespace}
@@ -106,7 +106,7 @@ wise2build-worker:
     - /tmp:/tmp
 
 build-schedule:
-  image: registry.aliyuncs.com/wise2c/build-schedule:2.1.7
+  image: registry.aliyuncs.com/wise2c/build-schedule:2.1.7.1
   environment:
     PROFILE: rancher
   links:
