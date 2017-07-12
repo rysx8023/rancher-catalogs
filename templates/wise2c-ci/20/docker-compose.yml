@@ -1,6 +1,8 @@
 ## Service Discovery
 consul-server:
   image: consul:0.7.0
+  ports:
+    - 8500:8500
   command: agent -server -client=0.0.0.0 -dev -node=node0 -bootstrap-expect=1 -data-dir=/tmp/consul
   labels:
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
@@ -112,6 +114,8 @@ sonarqube:
 
 artifactory:
   image: wisecity/artifactory-oss:5.2.0
+  ports:
+    - 8081:8081
   labels:
     io.rancher.container.pull_image: always
     io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
