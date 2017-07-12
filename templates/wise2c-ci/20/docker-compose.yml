@@ -72,6 +72,8 @@ wise2build-biz:
 
 wise2build-worker:
   image: registry.aliyuncs.com/wise2c/build-worker:2.1.8
+  environment:
+    PROFILE: rancher
   links:
     - consul-server:consul-server
     - rabbitmq
