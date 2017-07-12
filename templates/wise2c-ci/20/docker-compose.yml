@@ -80,6 +80,7 @@ wise2build-worker:
   labels:
     io.rancher.container.pull_image: always
     io.rancher.scheduler.affinity:host_label: wise2worker=${worker_host_label}
+    io.rancher.scheduler.affinity:container_label_ne: io.rancher.stack_service.name=wise2build-worker
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - /root/.jenkins:/root/.jenkins
