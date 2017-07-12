@@ -77,6 +77,8 @@ wise2build-worker:
   links:
     - consul-server:consul-server
     - rabbitmq
+  command:
+   - "--worker.numExecutors=10"
   labels:
     io.rancher.container.pull_image: always
     io.rancher.scheduler.affinity:host_label: wise2worker=${worker_host_label}
