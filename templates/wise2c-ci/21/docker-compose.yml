@@ -1,114 +1,116 @@
-# Middleware Start
-consul-server:
-  image: consul:0.7.0
-  command: agent -server -client=0.0.0.0 -dev -node=node0 -bootstrap-expect=1 -data-dir=/tmp/consul
-  labels:
-    io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
+version: '2'
+services:
+  # Middleware Start
+  consul-server:
+    image: consul:0.7.0
+    command: agent -server -client=0.0.0.0 -dev -node=node0 -bootstrap-expect=1 -data-dir=/tmp/consul
+    labels:
+      io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
-database:
-  image: mysql:5.7
-  environment:
-    MYSQL_ROOT_PASSWORD: wise2c2017
-    MYSQL_DATABASE: wise2c
-  stdin_open: true
-  tty: true
-  volumes:
-  - /var/lib/cloud-data:/var/lib/mysql
-  volumes_from:
-  - mysql-server-datavolume
-  labels:
-    io.rancher.container.pull_image: always
-    io.rancher.sidekicks: mysql-server-datavolume
+  database:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: wise2c2017
+      MYSQL_DATABASE: wise2c
+    stdin_open: true
+    tty: true
+    volumes:
+    - /var/lib/cloud-data:/var/lib/mysql
+    volumes_from:
+    - mysql-server-datavolume
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.sidekicks: mysql-server-datavolume
 
-mysql-server-datavolume:
-  image: wisecity/mysql-sidekick
-  labels:
-    io.rancher.container.start_once: 'true'
-    io.rancher.container.pull_image: always
+  mysql-server-datavolume:
+    image: wisecity/mysql-sidekick
+    labels:
+      io.rancher.container.start_once: 'true'
+      io.rancher.container.pull_image: always
 
-document:
-  image: registry.aliyuncs.com/wise2c/document:2.1.6
-  labels:
-    io.rancher.container.pull_image: always
-    io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
+  document:
+    image: registry.aliyuncs.com/wise2c/document:2.1.6
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
-rabbitmq:
-  image: rabbitmq:3-management
-  environment:
-    - RABBITMQ_DEFAULT_USER=wise2c
-    - RABBITMQ_DEFAULT_PASS=wise2c
-  labels:
-    io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=wise2c
+      - RABBITMQ_DEFAULT_PASS=wise2c
+    labels:
+      io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
-sonarqube:
-  image: wisecity/sonarqube:6.1
-  environment:
-    SONARQUBE_JDBC_PASSWORD: wise2c2017
-    SONARQUBE_JDBC_URL: jdbc:mysql://database:3306/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance
-    SONARQUBE_JDBC_USERNAME: root
-  links:
-  - database:database
-  ports:
-  - 9000:9000/tcp
+  sonarqube:
+    image: wisecity/sonarqube:6.1
+    environment:
+      SONARQUBE_JDBC_PASSWORD: wise2c2017
+      SONARQUBE_JDBC_URL: jdbc:mysql://database:3306/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance
+      SONARQUBE_JDBC_USERNAME: root
+    links:
+    - database:database
+    ports:
+    - 9000:9000/tcp
 
-artifactory:
-  image: wisecity/artifactory-oss:5.2.0
-  labels:
-    io.rancher.container.pull_image: always
-    io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
-  volumes:
-    - /var/lib/artifactory-data:/var/opt/jfrog/artifactory
-# Middleware End
-wise2build-frontend:
-  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.9
-  environment:
-    CONSUL: consul-server:8500
-  external_links:
-    - consul-server:consul-server
-  ports:
-    - ${http_port}:80
-  labels:
-    io.rancher.container.pull_image: always
-    io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
+  artifactory:
+    image: wisecity/artifactory-oss:5.2.0
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
+    volumes:
+      - /var/lib/artifactory-data:/var/opt/jfrog/artifactory
+  # Middleware End
+  wise2build-frontend:
+    image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.9
+    environment:
+      CONSUL: consul-server:8500
+    external_links:
+      - consul-server:consul-server
+    ports:
+      - ${http_port}:80
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
 
-wise2build-biz:
-  image: registry.aliyuncs.com/wise2c/build-biz:2.1.9
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
-  environment:
-    PROFILE: rancher
-  labels:
-    io.rancher.container.pull_image: always
-    io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
-  links:
-    - consul-server:eureka-server
+  wise2build-biz:
+    image: registry.aliyuncs.com/wise2c/build-biz:2.1.9
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      PROFILE: rancher
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
+    links:
+      - consul-server:eureka-server
+      - database:mysql-server
+      - rabbitmq
+    command:
+      - --spring.datasource.password=wise2c2017
+
+  wise2build-worker:
+    image: registry.aliyuncs.com/wise2c/build-worker:2.1.9
+    environment:
+      PROFILE: rancher
+      WORKER_HOME: ${workespace}
+    links:
+      - consul-server:eureka-server
+      - rabbitmq
+    labels:
+      io.rancher.scheduler.global: 'true'
+      io.rancher.container.pull_image: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root/.jenkins/workspace:/root/.jenkins/workspace
+      - /tmp:/tmp
+
+  build-schedule:
+    image: registry.aliyuncs.com/wise2c/build-schedule:2.1.8
+    environment:
+      PROFILE: rancher
+    links:
     - database:mysql-server
-    - rabbitmq
-  command:
-    - --spring.datasource.password=wise2c2017
-
-wise2build-worker:
-  image: registry.aliyuncs.com/wise2c/build-worker:2.1.9
-  environment:
-    PROFILE: rancher
-    WORKER_HOME: ${workespace}
-  links:
     - consul-server:eureka-server
-    - rabbitmq
-  labels:
-    io.rancher.scheduler.global: 'true'
-    io.rancher.container.pull_image: always
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
-    - /root/.jenkins/workspace:/root/.jenkins/workspace
-    - /tmp:/tmp
-
-build-schedule:
-  image: registry.aliyuncs.com/wise2c/build-schedule:2.1.8
-  environment:
-    PROFILE: rancher
-  links:
-  - database:mysql-server
-  - consul-server:eureka-server
-  command:
-  - --spring.datasource.password=wise2c2017
+    command:
+    - --spring.datasource.password=wise2c2017
