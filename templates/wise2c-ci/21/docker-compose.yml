@@ -102,7 +102,7 @@ services:
       io.rancher.container.pull_image: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /root/.jenkins/workspace:/root/.jenkins/workspace
+      - ${workespace}/workspace:${workespace}/workspace
       - /tmp:/tmp
 
   build-schedule:
