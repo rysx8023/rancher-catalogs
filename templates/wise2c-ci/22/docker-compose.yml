@@ -1,0 +1,128 @@
+## Service Discovery
+consul-server:
+  image: consul:0.7.0
+  ports:
+    - 8500:8500
+  command: agent -server -client=0.0.0.0 -dev -node=node0 -bootstrap-expect=1 -data-dir=/tmp/consul
+  labels:
+    io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
+
+## Database
+workerflow-database:
+  image: mysql:5.5
+  volumes:
+  - /var/lib//biz-data-dir:/var/lib/mysql
+  environment:
+    MYSQL_ROOT_PASSWORD: my-secret-pw
+    MYSQL_DATABASE: builderdb
+  command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+  labels:
+    io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
+
+schedule-database:
+  image: mysql:5.5
+  environment:
+    MYSQL_DATABASE: scheduledb
+    MYSQL_ROOT_PASSWORD: password
+
+rabbitmq:
+  image: rabbitmq:3-management
+  environment:
+    - RABBITMQ_DEFAULT_USER=wise2c
+    - RABBITMQ_DEFAULT_PASS=wise2c
+  labels:
+    io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
+
+postgres-server:
+  environment:
+    POSTGRES_USER: sonar
+    POSTGRES_PASSWORD: sonar
+  image: postgres:9
+  labels:
+    io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
+
+## Service
+wise2build-frontend:
+  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.9
+  environment:
+    CONSUL: consul-server:8500
+  external_links:
+    - consul-server:consul-server
+  ports:
+    - ${http_port}:80
+  labels:
+    io.rancher.container.pull_image: always
+    io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
+
+wise2build-biz:
+  image: registry.aliyuncs.com/wise2c/build-biz:2.1.9
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+  environment:
+    PROFILE: rancher
+  labels:
+    io.rancher.container.pull_image: always
+    io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
+  command:
+    - "--spring.datasource.password=my-secret-pw"
+  links:
+    - consul-server:consul-server
+    - workerflow-database:mysql-server
+    - rabbitmq
+
+wise2build-worker:
+  image: registry.aliyuncs.com/wise2c/build-worker:2.1.9
+  environment:
+    PROFILE: rancher
+  links:
+    - consul-server:consul-server
+    - rabbitmq
+  command:
+   - "--worker.numExecutors=10"
+  labels:
+    io.rancher.container.pull_image: always
+    io.rancher.scheduler.affinity:host_label: wise2worker=${worker_host_label}
+    io.rancher.scheduler.affinity:container_label_ne: io.rancher.stack_service.name=wise2build-worker
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /root/.jenkins:/root/.jenkins
+    - /tmp:/tmp
+
+build-schedule:
+  image: registry.aliyuncs.com/wise2c/build-schedule:2.1.9
+  command:
+    - "--spring.datasource.password=password"
+  environment:
+    PROFILE: rancher
+  links:
+  - schedule-database:mysql-server
+  - consul-server:consul-server
+
+document:
+  image: registry.aliyuncs.com/wise2c/document:2.1.9
+  labels:
+    io.rancher.container.pull_image: always
+    io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
+
+sonarqube:
+  image: wisecity/sonarqube:6.1
+  environment:
+    SONARQUBE_JDBC_USERNAME: sonar
+    SONARQUBE_JDBC_PASSWORD: sonar
+    SONARQUBE_JDBC_URL: jdbc:postgresql://postgres-server/sonar
+  links:
+  - postgres-server:postgres-server
+  ports:
+  - ${sonarqube_http_port}:9000
+  labels:
+    io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
+
+artifactory:
+  image: wisecity/artifactory-oss:5.2.0
+  ports:
+    - 8081:8081
+  labels:
+    io.rancher.container.pull_image: always
+    io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
+  volumes:
+    - /var/lib/artifactory-data:/var/opt/jfrog/artifactory
