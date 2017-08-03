@@ -29,7 +29,7 @@ services:
       io.rancher.container.pull_image: always
 
   document:
-    image: registry.aliyuncs.com/wise2c/document:2.1.6
+    image: registry.aliyuncs.com/wise2c/document:2.1.9
     labels:
       io.rancher.container.pull_image: always
       io.rancher.scheduler.affinity:host_label: wise2biz=${biz_host_label}
@@ -106,7 +106,7 @@ services:
       - /tmp:/tmp
 
   build-schedule:
-    image: registry.aliyuncs.com/wise2c/build-schedule:2.1.8
+    image: registry.aliyuncs.com/wise2c/build-schedule:2.1.9
     environment:
       PROFILE: rancher
     links:
