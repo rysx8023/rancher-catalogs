@@ -43,7 +43,7 @@ postgres-server:
 
 ## Service
 wise2build-frontend:
-  image: registry.aliyuncs.com/wise2c/wisebuild-fronted:2.1.8
+  image: registry.aliyuncs.com/wise2c/workflow-ui:2.1.8
   environment:
     CONSUL: consul-server:8500
   external_links:
